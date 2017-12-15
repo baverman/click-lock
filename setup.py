@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='click-lock',
-    version='0.5',
+    version='0.5.1',
     url='https://github.com/baverman/click-lock/',
     license='MIT',
     author='Anton Bobrov',
@@ -10,6 +10,7 @@ setup(
     description='Adds locks and timeouts to click entrypoints',
     long_description=open('README.rst').read(),
     py_modules=['click_lock'],
+    install_requires=['click'],
     include_package_data=True,
     zip_safe=False,
     platforms='any',
