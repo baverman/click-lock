@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='click-lock',
-    version='0.5.1',
+    version='0.6',
     url='https://github.com/baverman/click-lock/',
     license='MIT',
     author='Anton Bobrov',
