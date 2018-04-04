@@ -4,22 +4,28 @@ import fcntl
 import signal
 import logging
 import traceback
+import functools
 
 import click
 
 
-def lock_group(name=None, **attrs):
-    @click.group(name, **attrs)
+def lock(func):
     @click.option('--lock', help='Path to lock file', metavar='fname')
     @click.option('--timeout', type=int, metavar='seconds',
                   help='Limit script execution time')
     @click.option('--trace/--no-trace', default=True,
-                  show_default=True, help='Log traceback in case of timeout')
-    def cli(lock, timeout, trace):
+                  show_default=True,
+                  help='Log traceback in case of timeout')
+    @click.pass_context
+    @functools.wraps(func)
+    def inner(ctx, *args, **kwargs):
+        lock = kwargs.pop('lock', None)
+        timeout = kwargs.pop('timeout', None)
+        trace = kwargs.pop('trace', None)
         lock and _set_lock(lock)
         timeout and _set_timeout(timeout, trace)
-
-    return cli
+        return ctx.invoke(func, *args, **kwargs)
+    return inner
 
 
 def _set_lock(path):

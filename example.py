@@ -1,14 +1,10 @@
+import time
 import click
-from click_lock import lock_group
+from click_lock import lock
 
-cli = lock_group()
+@click.command()
+@lock
+def cmd():
+    time.sleep(10)
 
-@cli.command()
-@click.argument('seconds', type=int)
-def wait(seconds):
-    """Wait for particular amount of seconds"""
-    import time
-    time.sleep(seconds)
-
-
-cli()
+cmd()

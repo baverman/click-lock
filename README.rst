@@ -3,30 +3,26 @@ click-lock
 
 Adds locks and timeouts to `Click <http://click.pocoo.org/>`_ entrypoints.
 
-Where is only one function ``click_lock.lock_group`` with the
-same interface as ``click.group``. You define root group and can
-use it to declare commands or subgroups:
+There is only one decorator ``click_lock.lock`` which can be applied
+to click commands and groups:
 
 .. code:: python
 
     # example.py
+    import time
     import click
-    from click_lock import lock_group
+    import click_lock
 
-    cli = lock_group()
+    @click.command()
+    @click_lock.lock
+    def cmd():
+        time.sleep(10)
 
-    @cli.command()
-    @click.argument('seconds', type=int)
-    def wait(seconds):
-        """Wait for particular amount of seconds"""
-        import time
-        time.sleep(seconds)
-
-    cli()
+    cmd()
 
 Now you have some additional options::
 
-    Usage: example.py [OPTIONS] COMMAND [ARGS]...
+    Usage: example.py [OPTIONS]
 
     Options:
       --lock fname          Path to lock file
@@ -34,13 +30,10 @@ Now you have some additional options::
       --trace / --no-trace  Log traceback in case of timeout  [default: True]
       --help                Show this message and exit.
 
-    Commands:
-      wait  Wait for particular amount of seconds
-
 For example, lock script execution::
 
-    python example.py --lock /tmp/example.lck wait 10
+    python example.py --lock /tmp/example.lck
 
-Limit script execution::
+Limit script execution time::
 
-    python example.py --timeout 5 wait 10
+    python example.py --timeout 1
